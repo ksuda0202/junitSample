@@ -13,6 +13,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.CsvFileSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
+import test.java.example.base.TestBase;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -28,11 +29,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class TestSample {
+class TestSample extends TestBase {
 
     @BeforeAll
-    void initAll() {
-        // 実施前に処理があれば書く
+    void initAll() throws Exception {
+        init("property/test.properties");
+        dbConnect();
     }
 
     @BeforeEach
@@ -41,7 +43,9 @@ class TestSample {
     }
 
     @Test
-    void test() {
+    void test() throws Exception {
+        dbBackup(new String[]{"user"});
+        dbSetup("resources/db");
         Throwable exception = assertThrows(IOException.class, () -> {
             throw new IOException("message");
         });
@@ -95,12 +99,12 @@ class TestSample {
     }
 
     @AfterEach
-    void tearDown() {
-        // 各テスト実施後に共通的な処理があれば書く
+    void tearDown() throws Exception {
+        dbRestore();
     }
 
     @AfterAll
-    void tearDownAll() {
-        // 実施後に処理があれば書く
+    void tearDownAll() throws Exception {
+        dbDisConnect();
     }
 }

@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="dbunit-libraries">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/dbunit/dbunit-2.6.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/dbunit/poi-4.1.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/dbunit/poi-ooxml-4.1.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/dbunit/poi-ooxml-schemas-4.1.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/dbunit/xmlbeans-3.1.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/dbunit/commons-math3-3.6.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
