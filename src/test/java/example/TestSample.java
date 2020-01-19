@@ -1,6 +1,8 @@
 package test.java.example;
 
+import main.java.example.AdvancedCollaborator;
 import main.java.example.Calculator;
+import mockit.*;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -30,6 +32,10 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class TestSample extends TestBase {
+    AdvancedCollaborator ac = new AdvancedCollaborator("test");
+
+    TestSample() throws Exception {
+    }
 
     @BeforeAll
     void initAll() throws Exception {
@@ -41,6 +47,44 @@ class TestSample extends TestBase {
     void init() {
         // 各テスト実施前に共通的な処理があれば書く
     }
+
+    @Test
+    void testToMockUpPrivateMethod() throws Exception {
+        AdvancedCollaborator mock = new AdvancedCollaborator("test");
+
+        // jmockit使用するときのjavaagentにはモジュール定義ファイル(*.iml)があるディレクトリからjarまでの相対パスを渡す
+        // jmockit-1.46はwarningが出るが、private method のモック化が可能（1.47からモック化できない）
+        // eclipseの場合、eclipseの設定ファイル(*.ini)があるディレクトリからjarまでの相対パスを渡す
+        // それでも起動できないときは、eclipse.iniに「-Xverify:none」を追加してみる
+        new MockUp(mock) {
+            @Mock
+            private String privateMethod() {
+                return "mocked: ";
+            }
+        };
+
+        String res = mock.methodThatCallsPrivateMethod(1);
+        assertEquals("mocked: 1", res);
+    }
+
+    @Test
+    void testToCallPrivateMethod() throws Exception {
+        Object value = Deencapsulation.invoke(ac, "privateMethod");
+        assertEquals("default:", value);
+    }
+
+    @Test
+    public void testToSetPrivateFieldDirectly() throws Exception {
+        Deencapsulation.setField(ac, "privateField", 10);
+        assertEquals(10, ac.methodThatReturnsThePrivateField());
+    }
+
+    @Test
+    public void testToGetPrivateFieldDirectly() throws Exception {
+        int value = Deencapsulation.getField(ac, "privateField");
+        assertEquals(5, value);
+    }
+
 
     @Test
     void test() throws Exception {
